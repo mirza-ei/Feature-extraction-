@@ -1,163 +1,59 @@
-### **Voice Matcher**
+Certainly! Here’s a more detailed overview:
 
----
+### Overview
 
-##### **Overview**
+This voice matching system is designed to compare a test audio file against a set of predefined reference audio files. It aims to identify the closest matching voice by analyzing various audio features and calculating the similarities between them.
 
-*Voice Matcher is an application designed to compare a test voice file with a set of predefined voice files. The comparison is performed using various audio features and distance metrics to determine the similarity between the test voice and the predefined voices.*
+### Features
 
-#### *Features*
+1. **Audio Upload:**
+   - Users can upload a test voice file for comparison. This file serves as the input for the voice matching process.
 
-- Extracts audio features such as MFCC, chroma, zero-crossing rate, and energy envelope.
+2. **Audio Feature Extraction:**
+   - The system extracts key audio features from both the test file and the reference files. These features include:
+     - **MFCC (Mel-frequency cepstral coefficients):** Captures the power spectrum of the audio.
+     - **Chroma:** Represents the twelve different pitch classes in music.
+     - **Zero-Crossing Rate (ZCR):** Measures the rate at which the signal changes sign.
+     - **Energy Envelope:** Represents the energy level of the audio signal over time.
 
-- Computes distances between the features of the test voice and predefined voice files using Euclidean, Manhattan, and Cosine distances, as well as Kendall Tau correlation.
+3. **Similarity Metrics:**
+   - The system uses several metrics to evaluate the similarity between the test voice and the reference voices:
+     - **Euclidean Distance:** Measures the straight-line distance between feature vectors.
+     - **Manhattan Distance:** Calculates the sum of absolute differences between feature vectors.
+     - **Cosine Similarity:** Measures the cosine of the angle between feature vectors, indicating their orientation.
+     - **Kendall’s Tau:** Evaluates the correlation between the feature vectors.
 
-- Provides a detailed comparison report with similarity metrics.
+4. **Best Match Identification:**
+   - Based on the calculated similarities, the system identifies the reference voice that most closely matches the test voice. It uses cosine similarity as a primary criterion for determining the best match.
 
-- Identifies the best matching voice file based on the computed similarities.
+5. **Visual Comparison:**
+   - The system generates plots that compare the features of the test voice with those of the best-matched reference voice. These plots include:
+     - **MFCC Comparison**
+     - **Chroma Comparison**
+     - **ZCR Comparison**
+     - **Energy Envelope Comparison**
+   - The visualizations help users visually assess the similarity between the voices.
 
+6. **Results Presentation:**
+   - Results are displayed in an HTML table, showing the calculated distances and similarities for each feature type. 
+   - The system highlights the best match along with its similarity score.
 
-#### *Dependencies*
+### How It Works
 
-- `gradio`
+1. **Upload Test Audio:**
+   - Users upload their test voice file through the Gradio interface.
 
-- `librosa`
+2. **Feature Extraction:**
+   - The system processes the test audio file and reference files to extract the relevant audio features.
 
-- `numpy`
+3. **Distance Calculation:**
+   - It calculates various distances and similarities between the features of the test and reference voices.
 
-- `scipy`
+4. **Best Match Determination:**
+   - The system identifies the reference voice that best matches the test voice based on the calculated similarities.
 
-- `pandas`
+5. **Visualization and Results:**
+   - Visual plots comparing the features are generated.
+   - A summary of the comparison results is presented, highlighting the closest match and similarity metrics.
 
-#### *Install the dependencies using:*
-
-
-pip install gradio librosa numpy scipypandas
-
-#### *Code Explanation*
-
-
-##### *Feature Extraction*
-
-
-
-The `extract_features` function extracts the following features from an audio file:
-
-◾ **MFCC**: Mel Frequency Cepstral  Coefficients
-
-◾ **Chroma**: Chroma feature
-
-◾ **ZCR**: Zero Crossing Rate
-
-◾**Energy Envelope**: Root Mean Square energy
-
-
-```python
-def extract_features(file_path):
-    y, sr = librosa.load(file_path)
-    mfcc = librosa.feature.mfcc(y=y, sr=sr)
-    chroma = librosa.feature.chroma_stft(y=y, sr=sr)
-    zcr = librosa.feature.zero_crossing_rate(y)
-    energy_envelope = librosa.feature.rms(y=y)[0]
-    features = {
-        'mfcc': mfcc,
-        'chroma': chroma,
-        'zcr': zcr,
-        'energy_envelope': energy_envelope
-    }
-    return features
-```
-
-#### *Distance Calculation*
-
-The `calculate_distances` function computes the Euclidean, Manhattan, and Cosine distances, and Kendall Tau correlation between the features of two audio files.
-```python
-def calculate_distances(features1, features2):
-    distances = {}
-    for feature_name in features1:
-        feature1 = features1[feature_name].flatten()
-        feature2 = features2[feature_name].flatten()
-        min_length = min(len(feature1), len(feature2))
-        feature1 = feature1[:min_length]
-        feature2 = feature2[:min_length]
-        distances[f'{feature_name}_euclidean'] = euclidean(feature1, feature2)
-        distances[f'{feature_name}_manhattan'] = cityblock(feature1, feature2)
-        distances[f'{feature_name}_cosine'] = 1 - cosine(feature1, feature2)
-        corr, _ = kendalltau(feature1, feature2)
-        distances[f'{feature_name}_kendall'] = 1 - corr
-    return distances
-```
-
-#### *Voice Matching*
-
-
-The `voice_matcher` function compares the test voice with a predefined list of voice files and generates a comparison report.
-```python
-def voice_matcher(test_voice):
-    voice_files = ['1.wav', '2.wav', '3.wav', '4.wav']
-    results_df = pd.DataFrame(columns=['file_name', 'feature_name', 'cosine_similarity', 'kendall_correlation',
-                                       'euclidean_distance', 'manhattan_distance', 'match'])
-    test_features = extract_features(test_voice)
-    for file in voice_files:
-        features = extract_features(file)
-        distances = calculate_distances(features, test_features)
-        for feature_name in features:
-            cosine_similarity = distances[f'{feature_name}_cosine']
-            match_cosine = "Match" if cosine_similarity > 0.8 else "No Match"
-            match_euclidean = "Match" if distances[f'{feature_name}_euclidean'] < 0.5 else "No Match"
-            match_manhattan = "Match" if distances[f'{feature_name}_manhattan'] < 2.0 else "No Match"
-            match_kendall = "Match" if distances[f'{feature_name}_kendall'] < 0.4 else "No Match"
-            results_df = pd.concat([results_df, pd.DataFrame({
-                'file_name': file,
-                'feature_name': feature_name,
-                'cosine_similarity': cosine_similarity,
-                'kendall_correlation': distances[f'{feature_name}_kendall'],
-                'euclidean_distance': distances[f'{feature_name}_euclidean'],
-                'manhattan_distance': distances[f'{feature_name}_manhattan'],
-                'match': match_cosine
-            }, index=[0])], ignore_index=True)
-    if results_df.empty:
-        return "No results found.", ""
-    else:
-        match_counts = results_df[results_df['match'] == 'Match']['file_name'].value_counts()
-        if not match_counts.empty:
-            best_match = match_counts.index[0]
-            match_count = match_counts.iloc[0]
-            best_match_info = f"Best match: {best_match} (Number of matches: {match_count})"
-        else:
-            best_match_info = "No matches found."
-        return results_df.to_html(), best_match_info
-```
-
-##### *Gradio Interface*
-
-
-The Gradio interface allows users to upload a test voice file and view the comparison results.
-```python
-iface = gr.Interface(
-    fn=voice_matcher,
-    inputs=gr.Audio(type="filepath", label="Upload Test Voice"),
-    outputs=[gr.HTML(), gr.Textbox()],
-    title="Voice Matcher",
-    description="Upload a test voice and compare it with predefined voice files.",
-    theme="huggingface"
-)
-
-iface.launch()
-```
-
-#### *Usage*
-
-*1. Clone the repository.*
-
-*2. Install the required dependencies.*
-
-*3. Run the script to launch the Gradio interface.*
-
-*4. Upload a test voice file to compare it with the predefined voice files.*
-
-*5. View the comparison report and best match information.*
-
-
-
-
+This voice matching system is useful for applications such as voice identification, forensic analysis, and any scenario where comparing audio recordings is necessary. It leverages advanced audio processing techniques to provide accurate and meaningful comparisons.
