@@ -1,4 +1,4 @@
-### **Voice Matcher README:**
+### **Voice Matcher**
 
 ---
 
