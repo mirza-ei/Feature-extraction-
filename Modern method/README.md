@@ -224,19 +224,26 @@ def match_test_to_train(test_file, train_files):
 ```
 
 **Logistic Regression Explanation**:
+
 - **Logistic Regression** is used to classify the test file by comparing it against the training files. It finds a linear decision boundary in the feature space.
+
+
 - **Decision Function**: `decision_function` provides the distance of the samples from the decision boundary. Higher values indicate a stronger match.
 
 ## How It Works
 
 1. **Load Audio**: Audio files are loaded and their features are extracted.
-2. **Extract Features**: Audio features are extracted using MFCC, IMFCC, LFCC, and PNCC.
-3. **Normalize Features**: Features
 
- are normalized for consistency.
+2. **Extract Features**: Audio features are extracted using MFCC, IMFCC, LFCC, and PNCC.
+
+3. **Normalize Features**: Features are normalized for consistency.
+
 4. **Train GMM**: Gaussian Mixture Models are trained for each feature type.
+
 5. **Compute Scores**: Scores for each feature are computed using the GMM.
+
 6. **Train Logistic Regression**: Logistic Regression is trained using the scores.
+
 7. **Match Test to Train**: The test file is compared to the training files using the trained model and scores.
 
 
