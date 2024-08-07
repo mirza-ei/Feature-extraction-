@@ -42,11 +42,11 @@ vggish_model = build_vggish_model(weights_path)
 
 # Define the list of training files
 train_files = [
-    r'C:\Users\User\Voice-Verification-7\Modern method\1.wav',
-    r'C:\Users\User\Voice-Verification-7\Modern method\2.wav',
-    r'C:\Users\User\Voice-Verification-7\Modern method\mom.m4a',
-    r'C:\Users\User\Voice-Verification-7\Modern method\Recording.m4a',
-    r'C:\Users\User\Voice-Verification-7\Modern method\4.mp3'
+    r'C:\Users\User\Voice-Verification-8\Modern method\voice file\1.wav',
+    r'C:\Users\User\Voice-Verification-8\Modern method\voice file\2.wav',
+    r'C:\Users\User\Voice-Verification-8\Modern method\voice file\3.wav',
+    r'C:\Users\User\Voice-Verification-8\Modern method\voice file\4.mp3',
+    r'C:\Users\User\Voice-Verification-8\Modern method\voice file\5.wav'
 ]
 
 # Extract features for training files
