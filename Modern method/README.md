@@ -1,88 +1,67 @@
-### README for Voice Matching System
+# Speaker Verification System
 
-#### Introduction
+## Overview
 
-This voice matching system uses machine learning techniques to identify which of a set of predefined training audio files best matches a given test audio file. The system extracts audio features, normalizes them, trains Gaussian Mixture Models (GMMs), and uses logistic regression for classification. It aims to accurately find the closest match based on extracted audio features.
+This project is a Speaker Verification System that uses a deep learning model to identify the most similar audio file from a set of pre-defined training files. It leverages audio processing techniques and a VGG16-based feature extractor to compare audio files.
 
-#### Key Components
+## Components
 
-1. **Audio Processing:**
-   - **Loading Audio:** Uses the `librosa` library to load audio files and extract the raw audio data.
-   - **Feature Extraction:** Computes various audio features, including Mel-frequency Cepstral Coefficients (MFCCs), Imposed MFCCs (IMFCCs), Linear Frequency Cepstral Coefficients (LFCCs), and Perceptual Nonlinear Cepstral Coefficients (PNCCs).
+1. **Audio Processing**:
+   - Converts audio files into mel spectrograms using `librosa`.
+   - Resizes the spectrogram to fit the input shape required by the VGG16 model.
 
-2. **Feature Normalization:**
-   - **Standardization:** Normalizes features by scaling them to have zero mean and unit variance. This helps in reducing bias due to different scales of features.
+2. **Feature Extraction**:
+   - Utilizes a VGG16-based model to extract features from the mel spectrograms.
+   - The VGG16 model is fine-tuned to output a feature vector suitable for similarity comparison.
 
-3. **Model Training:**
-   - **Gaussian Mixture Models (GMMs):** Fits GMMs to the extracted and normalized features from the training files. GMMs are used to model the distribution of features in each training file.
-   - **Logistic Regression:** Trains a logistic regression classifier using the GMM scores to differentiate between different training files.
+3. **Feature Normalization**:
+   - Normalizes the extracted features using `StandardScaler` to ensure consistency and comparability.
 
-4. **Similarity Scoring:**
-   - **GMM Scoring:** Calculates the log-likelihood scores of the features from the test audio using the trained GMMs.
-   - **Threshold Determination:** Determines a similarity threshold to decide if the test audio sufficiently matches any of the training files.
+4. **Similarity Measurement**:
+   - Computes cosine distances between the feature vectors of the uploaded audio and the training files to find the most similar file.
 
-5. **Matching Process:**
-   - **Score Calculation:** Computes similarity scores for the test audio against each training file using the trained GMMs.
-   - **Prediction and Matching:** Uses logistic regression to classify the test audio and determine which training file is the best match based on the highest score.
+5. **User Interface**:
+   - Employs `gradio` to create a simple web interface where users can upload an audio file and receive the most similar file from the training set along with a similarity score.
 
-#### Workflow
+## Usage
 
-1. **Setup and Initialization:**
-   - Define the paths to the training audio files and the test audio file.
+1. **Model Setup**:
+   - The VGG16 model is loaded with weights from ImageNet and adapted for feature extraction.
 
-2. **Feature Extraction and Normalization:**
-   - Load the audio files and extract features.
-   - Normalize these features to prepare them for model training.
+2. **Training Files**:
+   - Specify the paths to the training audio files. These files are used to build the reference feature set.
 
-3. **Training:**
-   - Train GMMs on the normalized features of each training file.
-   - Use the GMM scores to train a logistic regression model.
+3. **Feature Extraction**:
+   - Extract and normalize features from the training files.
 
-4. **Testing and Matching:**
-   - Extract and normalize features from the test audio.
-   - Score the test audio against each training file and classify it using the logistic regression model.
+4. **Verification**:
+   - Upload an audio file through the Gradio interface.
+   - The system processes the audio, extracts features, and compares them to the training set.
+   - Displays the path of the most similar training file and the similarity score.
 
-5. **Results:**
-   - Output the best matching training file based on similarity scores.
-   - Provide details on the similarity scores and feature weights.
+## Example Workflow
 
-#### Detailed Steps
+1. **Preprocess**:
+   - Convert audio to mel spectrogram.
+   - Resize and adjust the spectrogram for the model.
 
-1. **Loading and Preparing Data:**
-   - **Audio Loading:** Load audio data from specified file paths. Handle exceptions if files are not found.
-   - **Feature Extraction:** Extract MFCC, IMFCC, LFCC, and PNCC features from the audio. Print shapes of extracted features for verification.
+2. **Feature Extraction**:
+   - Use VGG16-based model to get feature vectors.
 
-2. **Training Models:**
-   - **GMM Training:** Fit GMMs to each feature set. Print convergence status and means of the GMMs.
-   - **Logistic Regression Training:** Train the classifier with scaled GMM scores from the training files.
+3. **Comparison**:
+   - Normalize features and compute cosine distances.
 
-3. **Testing and Evaluation:**
-   - **Score Calculation:** Compute GMM scores for test audio features.
-   - **Classification:** Use the logistic regression model to classify the test audio and identify the closest match.
+4. **User Interface**:
+   - Gradio interface allows users to upload an audio file and view results.
 
-4. **Output:**
-   - **Match Information:** Print the best match and similarity scores. Provide details on feature weights used in classification.
+## Launching the Interface
 
-#### Requirements
+To start the web interface:
 
-- **Python Libraries:**
-  - `numpy`
-  - `scikit-learn`
-  - `librosa`
-  - `os`
+```python
+iface.launch()
+```
 
-- **Audio Files:**
-  - Ensure audio files are in a format supported by `librosa` (e.g., WAV).
+This command launches the Gradio app, enabling users to interact with the speaker verification system via their web browser.
 
-#### Usage
-
-1. **Set Up File Paths:**
-   - Define paths to the training audio files and the test audio file in the script.
-
-2. **Run the Matching Function:**
-   - Call the `match_test_to_train` function with the paths to your training and test audio files.
-
-3. **Review Results:**
-   - Check the printed results to determine the best match and similarity scores.
-
-This README provides a thorough explanation of the voice matching system, covering its components, workflow, and how to use the script effectively. For additional details or troubleshooting, refer to the comments and print statements included in the code.
+Feel free to modify the paths to the training files and adjust other parameters as needed to fit your specific use case.
