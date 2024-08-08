@@ -1,8 +1,8 @@
-# Speaker Verification System
+# Voice matching
 
 ## Overview
 
-This project is a Speaker Verification System that uses a deep learning model to identify the most similar audio file from a set of pre-defined training files. It leverages audio processing techniques and a VGG16-based feature extractor to compare audio files.
+This project is a voice matching that uses a deep learning model to identify the most similar audio file from a set of pre-defined training files. It leverages audio processing techniques and a VGG16-based feature extractor to compare audio files.
 
 ## Components
 
