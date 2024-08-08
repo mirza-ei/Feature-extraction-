@@ -2,7 +2,7 @@
 
 
 
-welcome to the  Feature extraction and voice matching application repository. 
+Welcome to the  Feature extraction and voice matching application repository. 
 
 In this document, the codes used include two parts.
 
