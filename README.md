@@ -14,4 +14,4 @@ And in the second part, I have tried to use VGG-16 model to compare and match th
 - Higher code execution speed compared to the first code sample
 - Better voice gender recognition
 
-And I am improving the error and optimizing the code.
+And I'm improving the error and optimizing the code.
