@@ -76,7 +76,7 @@ iface = gr.Interface(
     fn=verify_speaker,
     inputs=gr.Audio(type="filepath"),
     outputs=[gr.Textbox(label="Most Similar File"), gr.Textbox(label="Similarity Score")],
-    title="Speaker Verification System",
+    title="voice matching app",
     description="Upload an audio file to find the most similar file from the training set."
 )
 
